@@ -3,7 +3,7 @@
 $(document).ready(function() {
 	loadState();
 
-	attachMarkDoneListener();
+	attachToggleDoneListener();
 
 	// toggle edit
 	$("a i.fa").click(function(){
@@ -16,7 +16,7 @@ $(document).ready(function() {
 			$(".do ul").attr("contenteditable", false);
 			$(this).removeClass("fa-close").addClass("fa-edit");
 			saveState();
-			attachMarkDoneListener();
+			attachToggleDoneListener();
 		}		
 	});
 
@@ -53,18 +53,34 @@ $(document).mouseup(function (e)
         $(".do ul").attr("contenteditable", false);
 		$("a i.fa").removeClass("fa-close").addClass("fa-edit");
 		saveState();
-		attachMarkDoneListener();
+		attachToggleDoneListener();
     }
 });
 
-function attachMarkDoneListener() {
+function attachToggleDoneListener() {
 	// mark as done
-	$(".do li").click(function() {
+	$(".do li").off('click').click(function() {
 		if ( $(".do ul").attr("contenteditable") != 'true' ) {
 			if ($(this).parents(".do").length > 0) {
-				$(this).prependTo(".did ul");
-				saveState();
+				$(this).animate({
+					left: '2000px'
+				}, 750, function() {
+					$(this).prependTo(".did ul").animate({
+						left: '0'
+					}, 500, function() {
+						saveState();
+						attachToggleDoneListener();	
+					});
+				});
 			}
+		}
+	});
+	$(".did li").off('click').click(function() {
+		console.log('hi')
+		if ($(this).parents(".did").length > 0) {
+			$(this).appendTo(".do ul");
+			saveState();
+			attachToggleDoneListener();
 		}
 	});
 }
@@ -79,9 +95,11 @@ function saveState() {
 	});
 
 	json.did = [];
-	$(".did ul li").each(function() {
-		if ($(this).text().length > 0) {
-			json.did.push($(this).text());
+	$(".did ul li").each(function(i, e) {
+		if (i < 10) {
+			if ($(this).text().length > 0) {
+				json.did.push($(this).text());
+			}
 		}
 	});
 

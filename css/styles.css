@@ -5,6 +5,7 @@ html {
 h1 {
 	font-size: 2em;
 	padding-right: 100px;
+	width: 250px;
 	text-align: right;
 	margin-bottom: .75em;
 }

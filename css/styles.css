@@ -17,6 +17,7 @@ ul {
 li {
 	padding-bottom: 1em;
 	position: relative;
+	cursor: pointer;
 }
 
 .container {
@@ -71,6 +72,10 @@ a:hover
 	border:none;
 	border-right: 2px solid #33B5E5;
 	outline:none;
+}
+
+[contenteditable="true"] li {
+	cursor: text;
 }
 
 @media (max-width: 820px) {

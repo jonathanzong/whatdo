@@ -1,13 +1,15 @@
 // scripts.js
 
+$(window).on('focus', function() { loadState(); });
+
 $(document).ready(function() {
 	loadState();
 
 	attachToggleDoneListener();
 
 	// toggle edit
+	// TODO: refactor out the copypasta
 	$("a i.fa").click(function(){
-		console.log($(".do ul").attr("contenteditable"))
 		if ($(".do ul").attr("contenteditable") != 'true') {
 			$(".do ul").attr("contenteditable", true).focus();
 			$(this).removeClass("fa-edit").addClass("fa-close");
@@ -20,9 +22,21 @@ $(document).ready(function() {
 		}		
 	});
 
+	$('.do ul').click(function(e) {
+		var container = $(".do ul li");
+	    if (!container.is(e.target) // if the target of the click isn't the container...
+	        && container.has(e.target).length === 0) // ... nor a descendant of the container
+	    {
+	        if ($(".do ul").attr("contenteditable") != 'true') {
+				$(".do ul").attr("contenteditable", true).focus();
+				$("a i.fa").removeClass("fa-edit").addClass("fa-close");
+			}
+	    }
+	});
+
 	//keyup prevented the user from deleting the bullet (by adding one back right after delete), but didn't add in <li>'s on empty <ul>s, thus keydown added to check
-	$('ul').on('keyup keydown', function() {
-	  var $this = $(this);
+	$('.do ul').on('keyup keydown', function(e) {
+	    var $this = $(this);
 	    if (! $this.html()) {
 	        var $li = $('<li></li>');
 	       
@@ -38,7 +52,15 @@ $(document).ready(function() {
 	        sel.removeAllRanges();
 	        sel.addRange(range);
 	        
-	    }   
+	    }
+
+	    if (e.keyCode == 27 && $(".do ul").attr("contenteditable") == 'true') {
+	    	// esc pressed
+			$(".do ul").attr("contenteditable", false);
+			$("a i.fa").removeClass("fa-close").addClass("fa-edit");
+			saveState();
+			attachToggleDoneListener();
+	    }
 	});
 });
 
@@ -63,7 +85,7 @@ function attachToggleDoneListener() {
 		if ( $(".do ul").attr("contenteditable") != 'true' ) {
 			if ($(this).parents(".do").length > 0) {
 				$(this).animate({
-					left: '2000px'
+					left: $(window).width()
 				}, 750, function() {
 					$(this).prependTo(".did ul").animate({
 						left: '0'
@@ -76,7 +98,6 @@ function attachToggleDoneListener() {
 		}
 	});
 	$(".did li").off('click').click(function() {
-		console.log('hi')
 		if ($(this).parents(".did").length > 0) {
 			$(this).appendTo(".do ul");
 			saveState();

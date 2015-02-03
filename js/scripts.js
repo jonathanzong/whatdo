@@ -2,26 +2,14 @@
 
 $(window).on('focus', function(e) { 
 	loadState(); 
-	attachToggleDoneListener();
 });
 
 $(document).ready(function() {
 	loadState();
-	attachToggleDoneListener();
 
 	// toggle edit
-	// TODO: refactor out the copypasta
 	$("a i.fa").click(function(){
-		if ($(".do ul").attr("contenteditable") != 'true') {
-			$(".do ul").attr("contenteditable", true).focus();
-			$(this).removeClass("fa-edit").addClass("fa-close");
-		}
-		else {
-			$(".do ul").attr("contenteditable", false);
-			$(this).removeClass("fa-close").addClass("fa-edit");
-			saveState();
-			attachToggleDoneListener();
-		}		
+		setEditable($(".do ul").attr("contenteditable") != 'true');
 	});
 
 	$('.do ul').click(function(e) {
@@ -30,8 +18,7 @@ $(document).ready(function() {
 	        && container.has(e.target).length === 0) // ... nor a descendant of the container
 	    {
 	        if ($(".do ul").attr("contenteditable") != 'true') {
-				$(".do ul").attr("contenteditable", true).focus();
-				$("a i.fa").removeClass("fa-edit").addClass("fa-close");
+				setEditable(true);
 			}
 	    }
 	});
@@ -58,10 +45,7 @@ $(document).ready(function() {
 
 	    if (e.keyCode == 27 && $(".do ul").attr("contenteditable") == 'true') {
 	    	// esc pressed
-			$(".do ul").attr("contenteditable", false);
-			$("a i.fa").removeClass("fa-close").addClass("fa-edit");
-			saveState();
-			attachToggleDoneListener();
+			setEditable(false);
 	    }
 	});
 });
@@ -74,12 +58,21 @@ $(document).mouseup(function (e)
     	&& !$(".fa").is(e.target)
         && container.has(e.target).length === 0) // ... nor a descendant of the container
     {
-        $(".do ul").attr("contenteditable", false);
-		$("a i.fa").removeClass("fa-close").addClass("fa-edit");
-		saveState();
-		attachToggleDoneListener();
+        setEditable(false);
     }
 });
+
+function setEditable(editable) {
+	if (editable) {
+		$(".do ul").attr("contenteditable", true).focus();
+		$("a i.fa").removeClass("fa-edit").addClass("fa-close");
+	}
+	else {
+		$(".do ul").attr("contenteditable", false);
+		$("a i.fa").removeClass("fa-close").addClass("fa-edit");
+		saveState();
+	}
+}
 
 function attachToggleDoneListener() {
 	// mark as done
@@ -93,7 +86,6 @@ function attachToggleDoneListener() {
 						left: '0'
 					}, 500, function() {
 						saveState();
-						attachToggleDoneListener();	
 					});
 				});
 			}
@@ -103,7 +95,6 @@ function attachToggleDoneListener() {
 		if ($(this).parents(".did").length > 0) {
 			$(this).appendTo(".do ul");
 			saveState();
-			attachToggleDoneListener();
 		}
 	});
 }
@@ -127,6 +118,8 @@ function saveState() {
 	});
 
 	localStorage.setItem("whatdo_state", JSON.stringify(json));
+
+	attachToggleDoneListener();
 }
 
 function loadState() {
@@ -145,5 +138,5 @@ function loadState() {
 		$(".did ul").append("<li>" + state.did[i] + "</li>");
 	}
 
-	
+	attachToggleDoneListener();
 }

@@ -1,10 +1,12 @@
 // scripts.js
 
-$(window).on('focus', function() { loadState(); });
+$(window).on('focus', function(e) { 
+	loadState(); 
+	attachToggleDoneListener();
+});
 
 $(document).ready(function() {
 	loadState();
-
 	attachToggleDoneListener();
 
 	// toggle edit

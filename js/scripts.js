@@ -2,15 +2,12 @@
 
 $(window).on('focus', function(e) { 
 	loadState(); 
-	attachToggleDoneListener();
 });
 
 $(document).ready(function() {
 	loadState();
 	attachToggleDoneListener();
-
 	// toggle edit
-	// TODO: refactor out the copypasta
 	$("a i.fa").click(function(){
 		if ($(".do ul").attr("contenteditable") != 'true') {
 			$(".do ul").attr("contenteditable", true).focus();
@@ -20,7 +17,6 @@ $(document).ready(function() {
 			$(".do ul").attr("contenteditable", false);
 			$(this).removeClass("fa-close").addClass("fa-edit");
 			saveState();
-			attachToggleDoneListener();
 		}		
 	});
 
@@ -61,7 +57,7 @@ $(document).ready(function() {
 			$(".do ul").attr("contenteditable", false);
 			$("a i.fa").removeClass("fa-close").addClass("fa-edit");
 			saveState();
-			attachToggleDoneListener();
+	
 	    }
 	});
 });
@@ -74,16 +70,15 @@ $(document).mouseup(function (e)
     	&& !$(".fa").is(e.target)
         && container.has(e.target).length === 0) // ... nor a descendant of the container
     {
-        $(".do ul").attr("contenteditable", false);
-		$("a i.fa").removeClass("fa-close").addClass("fa-edit");
-		saveState();
-		attachToggleDoneListener();
+      $(".do ul").attr("contenteditable", false);
+			$("a i.fa").removeClass("fa-close").addClass("fa-edit");
+			saveState();
     }
 });
 
 function attachToggleDoneListener() {
 	// mark as done
-	$(".do li").off('click').click(function() {
+	$(document).on('click', ".do li", function() {
 		if ( $(".do ul").attr("contenteditable") != 'true' ) {
 			if ($(this).parents(".do").length > 0) {
 				$(this).animate({
@@ -93,17 +88,15 @@ function attachToggleDoneListener() {
 						left: '0'
 					}, 500, function() {
 						saveState();
-						attachToggleDoneListener();	
 					});
 				});
 			}
 		}
 	});
-	$(".did li").off('click').click(function() {
+	$(document).on('click', ".did li", function() {
 		if ($(this).parents(".did").length > 0) {
 			$(this).appendTo(".do ul");
 			saveState();
-			attachToggleDoneListener();
 		}
 	});
 }
@@ -144,6 +137,5 @@ function loadState() {
 	for (var i = 0; i < state.did.length; i++) {
 		$(".did ul").append("<li>" + state.did[i] + "</li>");
 	}
-
 	
 }

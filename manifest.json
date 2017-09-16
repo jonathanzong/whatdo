@@ -3,7 +3,7 @@
 
   "name": "What Do",
   "description": "A simple todo list.",
-  "version": "1.6",
+  "version": "1.8",
 
   "chrome_url_overrides" : {
     "newtab": "index.html"

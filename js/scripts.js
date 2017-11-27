@@ -1,7 +1,7 @@
 // scripts.js
 
-$(window).on('focus', function(e) { 
-	loadState(); 
+$(window).on('focus', function(e) {
+	loadState();
 });
 
 $(document).ready(function() {
@@ -17,7 +17,7 @@ $(document).ready(function() {
 			$(".do ul").attr("contenteditable", false);
 			$(this).removeClass("fa-close").addClass("fa-edit");
 			saveState();
-		}		
+		}
 	});
 
 	$('.do ul').click(function(e) {
@@ -37,11 +37,11 @@ $(document).ready(function() {
 	    var $this = $(this);
 	    if (! $this.html()) {
 	        var $li = $('<li></li>');
-	       
+
 	        var sel = window.getSelection();
-	        
+
 	       var range = sel.getRangeAt(0);
-	       
+
 	        range.collapse(false);
 	        range.insertNode($li.get(0));
 	        range = range.cloneRange();
@@ -49,7 +49,7 @@ $(document).ready(function() {
 	        range.collapse(false);
 	        sel.removeAllRanges();
 	        sel.addRange(range);
-	        
+
 	    }
 
 	    if (e.keyCode == 27 && $(".do ul").attr("contenteditable") == 'true') {
@@ -57,8 +57,12 @@ $(document).ready(function() {
 			$(".do ul").attr("contenteditable", false);
 			$("a i.fa").removeClass("fa-close").addClass("fa-edit");
 			saveState();
-	
+
 	    }
+	});
+
+	$('.do ul').focusout(function() {
+		saveState();
 	});
 });
 
@@ -137,5 +141,5 @@ function loadState() {
 	for (var i = 0; i < state.did.length; i++) {
 		$(".did ul").append("<li>" + state.did[i] + "</li>");
 	}
-	
+
 }
